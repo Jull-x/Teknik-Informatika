@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teknik Informatika</title>
+  <style>
+    * {box-sizing: border-box; margin: 0; padding: 0}
+    html,body{
+      height:100%;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#0f172a 0%, #071028 60%);
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    /* --- ANIMASI MASUK HALAMAN --- */
+    body {
+      animation: fadeZoomIn 1.4s ease both;
+    }
+    @keyframes fadeZoomIn {
+      from { opacity: 0; transform: scale(1.05); filter: blur(4px); }
+      to { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    /* --- BAGIAN HERO --- */
+    .hero{
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+      color:#fff;
+      background:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+        url('WhatsApp Image 2025-10-16 at 12.50.33_4ee9ee18.jpg') center/cover no-repeat;
+    }
+
+    /* --- EFEK CAHAYA BERGERAK --- */
+    .light {
+      position:absolute;
+      left:-30%; top:-40%; width:160%; height:180%;
+      background:radial-gradient(600px 400px at 30% 30%, rgba(255,255,255,0.1), transparent 25%),
+                 radial-gradient(300px 200px at 70% 70%, rgba(180,100,255,0.12), transparent 30%);
+      transform:translateX(-20vh) translateY(-10vh);
+      filter:blur(25px);
+      animation: floatLight 9s ease-in-out infinite alternate;
+      mix-blend-mode:screen;
+      opacity:0.85;
+    }
+    @keyframes floatLight {
+      0%{transform:translate(-25vh,-12vh) rotate(-5deg)}
+      50%{transform:translate(20vh,10vh) rotate(5deg)}
+      100%{transform:translate(-25vh,-12vh) rotate(-5deg)}
+    }
+
+    /* --- CARD UTAMA --- */
+    .card{
+      width:min(1100px, 92%);
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      padding:2.5rem;
+      border-radius:16px;
+      box-shadow:0 10px 40px rgba(2,6,23,0.6);
+      position:relative;
+      z-index:5;
+      backdrop-filter: blur(8px);
+      text-align:center;
+      transition:transform .4s ease, box-shadow .4s ease;
+    }
+    .card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 20px 50px rgba(120,50,255,0.35);
+    }
+
+    h1{
+      font-size:clamp(1.6rem,3.5vw,2.3rem);
+      margin-bottom:0.4rem;
+      background: linear-gradient(90deg,#a855f7,#7b5eff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p{
+      color:rgba(255,255,255,0.85);
+      margin-bottom:1.6rem;
+      font-size:1.1rem;
+    }
+
+    .btn-container {
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:0.6rem;
+      padding:0.7rem 1.4rem;
+      border-radius:10px;
+      border:0;
+      cursor:pointer;
+      font-weight:600;
+      font-size:1rem;
+      background:linear-gradient(90deg,#a855f7,#7b5eff);
+      color:#fff;
+      box-shadow:0 6px 18px rgba(124,58,237,0.25);
+      transition:all .3s ease;
+    }
+    .btn:hover {
+      transform:translateY(-3px);
+      box-shadow:0 8px 25px rgba(168,85,247,0.45);
+    }
+
+    /* --- OVERLAY & GALLERY --- */
+    .overlay{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:2rem;z-index:999;
+      background:rgba(10,0,25,0.8);backdrop-filter:blur(6px);
+      visibility:hidden;opacity:0;transition:opacity .25s ease, visibility .25s ease;
+    }
+    .overlay.open{visibility:visible;opacity:1}
+
+    .gallery{
+      width:min(1200px,98%);max-height:88vh;overflow:auto;
+      background:rgba(255,255,255,0.05);
+      padding:1.4rem;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.1);
+    }
+
+    .gallery-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+    .close{background:transparent;border:0;color:white;font-weight:700;cursor:pointer;font-size:1.1rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(160px,1fr));gap:0.7rem}
+    .thumb{position:relative;overflow:hidden;border-radius:8px}
+    .thumb img{width:100%;height:160px;object-fit:cover;transition:transform .35s ease}
+    .thumb:hover img{transform:scale(1.06)}
+
+    /* VIEWER (FOTO BESAR) */
+    .viewer{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.92);z-index:1000;padding:2rem;visibility:hidden;opacity:0;transition:opacity .18s ease}
+    .viewer.open{visibility:visible;opacity:1}
+    .viewer img{max-width:95%;max-height:95%;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.7)}
+
+    /* MEDIA ACCOUNT POPUP */
+    .media-accounts {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+    .media-accounts a {
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,0.08);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      width: 200px;
+      transition: all 0.3s ease;
+    }
+    .media-accounts a:hover {
+      background: linear-gradient(90deg,#a855f7,#7b5eff);
+      transform: translateY(-3px);
+    }
+
+    @media (max-width:600px){
+      .card{padding:1.4rem}
+      .thumb img{height:120px}
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="light"></div>
+
+    <div class="card">
+      <h1>Teknik Informatika</h1>
+      <p>Informatics Engineering Generation 2025</p>
+
+      <div class="btn-container">
+        <button class="btn" id="openGallery">📸 Lihat Foto</button>
+        <button class="btn" id="openVideo">🎬 Lihat Video</button>
+        <button class="btn" id="openMedia">🌐 Media Account</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overlay Foto -->
+  <div class="overlay" id="overlay">
+    <div class="gallery">
+      <div class="gallery-header">
+        <strong>Semua Foto</strong>
+        <button class="close" id="closeGallery">✕ Tutup</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <!-- Overlay Video -->
+  <div class="overlay" id="overlayVideo">
+    <div class="gallery">
+      <div class="gallery-header">
+        <strong>Video Informatika</strong>
+        <button class="close" id="closeVideo">✕ Tutup</button>
+      </div>
+      <div style="display:flex;justify-content:center;">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/ysz5S6PUM-U" 
+          title="Video Teknik Informatika" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay Media Account -->
+  <div class="overlay" id="overlayMedia">
+    <div class="gallery">
+      <div class="gallery-header">
+        <strong>Media Account</strong>
+        <button class="close" id="closeMedia">✕ Tutup</button>
+      </div>
+      <div class="media-accounts">
+        <a href="https://instagram.com" target="_blank">📸 Instagram</a>
+        <a href="https://youtube.com" target="_blank">▶️ YouTube</a>
+        <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Viewer Foto Besar -->
+  <div class="viewer" id="viewer">
+    <img id="viewerImg" src="" alt="Foto besar" />
+  </div>
+
+  <script>
+    const photos = [
+      'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=1600',
+      'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600',
+      'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1600',
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600',
+      'https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1600',
+    ];
+
+    const grid = document.getElementById('grid');
+    const overlay = document.getElementById('overlay');
+    const overlayVideo = document.getElementById('overlayVideo');
+    const overlayMedia = document.getElementById('overlayMedia');
+    const viewer = document.getElementById('viewer');
+    const viewerImg = document.getElementById('viewerImg');
+
+    document.getElementById('openGallery').onclick = () => openOverlay(overlay);
+    document.getElementById('closeGallery').onclick = () => closeOverlay(overlay);
+
+    document.getElementById('openVideo').onclick = () => openOverlay(overlayVideo);
+    document.getElementById('closeVideo').onclick = () => closeOverlay(overlayVideo);
+
+    document.getElementById('openMedia').onclick = () => openOverlay(overlayMedia);
+    document.getElementById('closeMedia').onclick = () => closeOverlay(overlayMedia);
+
+    function openOverlay(el){ el.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeOverlay(el){ el.classList.remove('open'); document.body.style.overflow=''; }
+
+    function buildGrid(){
+      grid.innerHTML = '';
+      photos.forEach((src, idx)=>{
+        const wrap = document.createElement('div'); wrap.className='thumb';
+        const img = document.createElement('img');
+        img.src = src; img.alt = 'Foto #' + (idx+1);
+        img.loading = 'lazy';
+        img.addEventListener('click', ()=> openViewer(src));
+        wrap.appendChild(img);
+        grid.appendChild(wrap);
+      });
+    }
+    function openViewer(src){ viewerImg.src = src; viewer.classList.add('open'); }
+    function closeViewer(){ viewer.classList.remove('open'); viewerImg.src = ''; }
+    viewer.addEventListener('click', (e)=>{ if(e.target !== viewerImg) closeViewer(); });
+
+    buildGrid();
+  </script>
+</body>
+</html>
